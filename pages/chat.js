@@ -1,6 +1,16 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase.js'
+
+// Como fazer ajax
+// olhar a barra network
+const SUPABASE_ANON_KEY = '';
+const SUPABASE_URL = '';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// no terminal
+// dar o comando yarn add @supabase/supabase-js 
 
 export default function ChatPage() {
     //return (
@@ -20,23 +30,44 @@ export default function ChatPage() {
     - [X] Vamos usar o onChange usa o useState (usar if para caso seja enter pra limpar a variavel)
     - [X] Lista de mensagens
     */
-
+    
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagem, setListaDeMensagem] = React.useState([]);
+
+    React.useEffect(() => {
+        supabaseClient
+            .from('messages')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(({ data }) => {
+                console.log('Dados consultados', dados);
+                setListaDeMensagem(data);
+            });
+    }, [mensagem] );
+    
 
     function handleNovaMensagem(novaMensagem) {
         //console.log(event);
         const mensagem = {
-            id: listaDeMensagem.length = 1,
+            // id: listaDeMensagem.length = 1,
             de: 'gmti87',
             texto: novaMensagem 
         }
         // chamada de um beckend
-        setListaDeMensagem([
-            mensagem,
-            ...listaDeMensagem,
-
-        ]);
+        supabaseClient
+            .from('mensagens')
+            .insert([
+                // Tem que ser um objeto com os mesmos campos que voce escreveu no supabase
+                mensagem
+            ])
+            .then(({ data }) => {
+                console.log('Criando mensagem: ', data);
+                setListaDeMensagem([
+                    data[0],
+                    ...listaDeMensagem,
+                ]);
+            });
+       
         setMensagem('');
     }
 
@@ -191,7 +222,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/${mensagem.de}.png`}
                             />
                             <Text tag="strong">
                                 {mensagem.de}
