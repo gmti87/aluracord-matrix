@@ -1,15 +1,14 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
-import { createClient } from '@supabase/supabase.js'
-
 import { useRouter } from 'next/router';
-import { ButtonSendSticker } from './src/components/ButtonSendSticker';
+import { createClient } from '@supabase/supabase-js';
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 
 // Como fazer ajax
 // olhar a barra network
-const SUPABASE_ANON_KEY = '';
-const SUPABASE_URL = '';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzgwNzYyNywiZXhwIjoxOTU5MzgzNjI3fQ.P1NVHgAURV-QqHw0ysgHCyVLNJggL8lBFCZWdTWvDE0';
+const SUPABASE_URL = 'https://itdllcfwxstqfvivqxuw.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // no terminal
@@ -47,24 +46,23 @@ export default function ChatPage() {
     const roteamento = useRouter();
     const usuarioLogado = roteamento.query.username;
     // console.log(roteamento.query);
-
     const [mensagem, setMensagem] = React.useState('');
-    const [listaDeMensagem, setListaDeMensagem] = React.useState([
-        // {
-        //     id: 1,
-        //     de: 'gmti87',
-        //     texto: ':sticker: URL_da_imagem',
-        // },
-        // {
-        //     id: 2,
-        //     de: 'peas',
-        //     texto: 'O ternario é meio triste',
-        // },
-    ]);
+    const [listaDeMensagem, setListaDeMensagem] = React.useState([]);
+    // Array estatico
+    // {
+    //     id: 1,
+    //     de: 'gmti87',
+    //     texto: ':sticker: URL_da_imagem',
+    // },
+    // {
+    //     id: 2,
+    //     de: 'peas',
+    //     texto: 'O ternario é meio triste',
+    // },
 
     React.useEffect(() => {
         supabaseClient
-            .from('messages')
+            .from('mensagens')
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
@@ -313,10 +311,8 @@ function MessageList(props) {
                             {mensagem.texto}
                         */}
                     </Text>
-
-                )
+                );
             })}
-            
         </Box>
     )
 }
