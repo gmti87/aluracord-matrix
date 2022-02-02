@@ -28,7 +28,7 @@ function GlobalStyle() {
 }
 
 export default function MyApp({ Component, pageProps }) {
-    console.log("Muda todas as páginas!");
+    // console.log("Muda todas as páginas!");
     return (
         <>
             <GlobalStyle />
